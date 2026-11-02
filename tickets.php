@@ -1,5 +1,8 @@
 <?php
+require __DIR__ . '/includes/auth.php';
+requireLogin();
 require __DIR__ . '/includes/db.php';
+
 $allowed = ['open', 'in_progress', 'resolved'];
 $status = $_GET['status'] ?? 'open';
 if (!in_array($status, $allowed, true)) { $status = 'open';}
@@ -13,6 +16,8 @@ $tickets = $stmt->fetchAll();
 <html lang="en">
 <head>
     <meta charset="UTF-8"><title>Tickets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <h1>Tickets</h1>
@@ -49,5 +54,11 @@ $tickets = $stmt->fetchAll();
             </form>
         </td>
     </table>
+    <script>
+        fetch("api_tickets.php")
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error("Network problem:", error));
+    </script>
 </body>
 </html>

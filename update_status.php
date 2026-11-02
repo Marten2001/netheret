@@ -4,8 +4,10 @@ $allowed = ['open', 'in_progress', 'resolved'];
 $id = (int) ($_POST['id'] ?? 0);
 $status = $_POST['status'] ?? '';
 
-//TODO 1
-//TODO 2
+if ($id === 0 || !in_array($status, $allowed, true)) {
+    $stmt = $pdo->prepare("UPDATE tickets SET status = ? WHERE if = ?");
+    $stmt->execute([$status, $id]);
+}
 
 header('Location: tickets.php');
 exit;
