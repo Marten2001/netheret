@@ -5,9 +5,7 @@ require __DIR__ . '/includes/queries.php';
 requireLogin();
 
 $term = trim($_GET['q'] ?? '');
-$articles = $term !== ''
-  ? searchKnowledge($pdo, $term)
-  : $pdo->query("SELECT id, title, category FROM knowledge_articles ORDER BY")->fetchAll();
+$articles = $term !== '' ? searchKnowledge($pdo, $term): $pdo->query("SELECT id, title, category FROM knowledge_articles ORDER BY")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
