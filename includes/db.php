@@ -1,6 +1,6 @@
 <?php
 // Real environment variables win; then the local file; then local defaults
-$local = file_exists(__DIR__ . '/config.local.php') ? require __DIR__ . '/config.local.php' : [];
+
 
 $host = getenv('DB_HOST') ?: ($local['DB_HOST'] ?? 'localhost');
 $port = getenv('DB_PORT') ?: ($local['DB_PORT'] ?? '3306');
@@ -9,10 +9,7 @@ $user = getenv('DB_USER') ?: ($local['DB_USER'] ?? 'root');
 $pass = getenv('DB_PASS') ?: ($local['DB_PASS'] ?? '');
 
 try {
-    $pdo = new PDO(
-        "mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4",
-        $user,
-        $pass,
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4", $user, $pass,
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
