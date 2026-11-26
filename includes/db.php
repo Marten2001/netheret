@@ -18,5 +18,6 @@ try {
     );
 } catch (PDOException $e) {
     error_log($e->getMessage());       // details go to the log, not the screen
+    http_response_code(503);
     exit('Database connection failed.');
 }
