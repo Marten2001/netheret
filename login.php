@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </head>
     <body>
         <h1>Log in</h1>
-        <?php if ($error) : ?>
+        <?php if ($error): ?>
             <p class="error" role="alert">
             <?= htmlspecialchars($error) ?>
         <?php endif; ?>
