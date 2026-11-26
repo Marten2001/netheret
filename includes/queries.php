@@ -1,6 +1,7 @@
-queries.txt
-100%
 <?php
+
+require __DIR__ . '/db.php';
+
 function getEngineerSchedule(PDO $pdo, int $engineerId): array
 {
     $stmt = $pdo->prepare(
@@ -11,20 +12,24 @@ function getEngineerSchedule(PDO $pdo, int $engineerId): array
          ORDER BY j.scheduled_start"
     );
     $stmt->execute([$engineerId]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function searchKnowledge(PDO $pdo, string $term): array
 {
-    $like = '%' . $term . '%';
-    $stmt = $pdo->prepare("SELECT id, title, category FROM knowledge_articles WHERE title LIKE ? OR body LIKE ? ORDER BY title");
+    $like = '%' . addcslashes($term, '%_\\') . '%';
+    $stmt = $pdo->prepare(
+        "SELECT id, title, category FROM knowledge_articles WHERE title LIKE ? OR body LIKE ? ORDER BY title"
+    );
     $stmt->execute([$like, $like]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function createJob(PDO $pdo, int $ticketId, int $engineerId, string $start, string $postcode, string $brief): int
 {
-    $stmt = $pdo->prepare("INSERT INTO jobs (ticket_id, scheduled_start, site_postcode, job_brief) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare(
+        "INSERT INTO jobs (ticket_id, engineer_id, scheduled_start, site_postcode, job_brief) VALUES (?, ?, ?, ?, ?)"
+    );
     $stmt->execute([$ticketId, $engineerId, $start, $postcode, $brief]);
     return (int)$pdo->lastInsertId();
 }
@@ -37,7 +42,7 @@ function updateJobStatus(PDO $pdo, int $jobId, string $status): bool
     }
     $stmt = $pdo->prepare("UPDATE jobs SET status = ? WHERE id = ?");
     $stmt->execute([$status, $jobId]);
-    return true;
+    return $stmt->rowCount() > 0;
 }
 
 function deleteJob(PDO $pdo, int $jobId): bool
